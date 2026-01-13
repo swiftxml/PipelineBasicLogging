@@ -19,7 +19,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftxml/PipelineLoggingBinding.git", from: "1.0.1"),
+        .package(url: "https://github.com/swiftxml/PipelineLoggingBinding.git", from: "1.0.3"),
         .package(url: "https://github.com/swiftxml/BasicLogging.git", from: "1.0.0"),
     ],
     targets: [
