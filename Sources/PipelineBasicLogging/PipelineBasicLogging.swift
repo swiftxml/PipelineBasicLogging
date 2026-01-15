@@ -8,14 +8,6 @@ public final class ConcurrentSeverityTracker: SeverityTracker, @unchecked Sendab
     
     private var _severity = InfoType.allCases.min()!
     
-    /// Gets the current severity.
-    public var value: InfoType {
-        queue.sync {
-            _severity
-        }
-    }
-    
-    internal let group = DispatchGroup()
     internal let queue: DispatchQueue
     
     public init(qualityOfService: DispatchQoS = .userInitiated) {
@@ -23,18 +15,23 @@ public final class ConcurrentSeverityTracker: SeverityTracker, @unchecked Sendab
     }
     
     public func process(_ newSeverity: InfoType) {
-        group.enter()
-        self.queue.sync {
-            if newSeverity > _severity {
-                _severity = newSeverity
+        self.queue.async {
+            if newSeverity > self._severity {
+                self._severity = newSeverity
             }
-            self.group.leave()
         }
     }
     
     /// Wait until all logging is done.
     public func wait() {
-        group.wait()
+        queue.sync {}
+    }
+    
+    /// Gets the current severity.
+    public var value: InfoType {
+        queue.sync {
+            _severity
+        }
     }
     
 }
